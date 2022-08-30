@@ -1,85 +1,98 @@
 import React,{useState} from 'react'
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import {Link} from "react-router-dom";
 import Axios from 'axios';
-import { useNavigate } from "react-router-dom";
-function Login () {
-    const[username, setName]= useState("")
-    const navigate = useNavigate();
-    const[pass, setPas]= useState("")
-    const [validated, setValidated] = useState(false);
-    const [loginStatus, setLoginStatus] = useState("");
+import {useNavigate}  from "react-router-dom";
 
-  const handleSubmit = (event) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
+import {
+  MDBContainer,
+  MDBCol,
+  MDBRow,
+  MDBBtn,
+  MDBIcon,
+  MDBInput,
+  MDBCheckbox
+}
+from 'mdb-react-ui-kit';
 
-    setValidated(true);
-  };
-
-    const log=()=>{
-        Axios.post("http://localhost:3001/show", {username: username,pass: pass}).then((response)=>{
-            if (!response.data.message) {
-                setLoginStatus( response.data.message);
-             } else {
-                setLoginStatus (response.data[0].message);
-             }
-        });
-    }
+function Login() {
+  let Navigate=useNavigate();
+  const[username, setName]= useState("")
+  const[pass, setPas]= useState("")
+  const [validated, setValidated] = useState(false);
+  const [loginStatus, setLoginStatus] = useState("");
+const handleSubmit = (event) => {
+  const form = event.currentTarget;
+  if (form.checkValidity() === false) {
+    event.preventDefault();
+    event.stopPropagation();
+    return "hi"
     
+  }
+  else{
+     
+    Navigate("/Profile")
+      Axios.post("http://localhost:3001/show", {username: username,pass: pass}).then((response)=>{
+          console.log(response)
+          if (response.status===200) {
+              Navigate("/Profile")
+              console.log("sucess",response)
+           } if(response.status===500){
+              try{
+                  Navigate("/SignUp")
+              }
+              catch(err){
+                  Navigate("/SignUp")
+              }
+           }
+      });
+      setValidated(true);
+      return "no"
+  }
+
+
+};
+
   return (
-    <div className="d-flex align-items-center justify-content-center">
-        <Container fluid>
-        <Row className="justify-content-md-center">
-        <Col xs lg="3"/>
-        <Col xs lg="6">
-        <Form className="layouts" noValidate validated={validated} onSubmit={handleSubmit}> 
-        
-      <Form.Group className="mb-3" controlId="formBasicEmail">
-        
-        <Form.Label>Email address</Form.Label>
-        <Form.Control required type="email" placeholder="Enter email" onChange={(e)=>
-        setName(e.target.value)} />
-        <Form.Control.Feedback type="invalid">
-              Please Enter a valid Email-Id.
-            </Form.Control.Feedback>
-        <Form.Text className="text-muted">
-          We'll never share your email with anyone else.
-        </Form.Text>
-      </Form.Group>
+    <MDBContainer fluid className="p-3 my-5">
 
-      <Form.Group className="mb-3" controlId="formBasicPassword">
-        <Form.Label>Password</Form.Label>
-        <Form.Control required type="password" placeholder="Password" onChange={(e)=>
+      <MDBRow>
+
+        <MDBCol col='10' md='6'>
+          <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg" class="img-fluid" alt="Phone image" />
+        </MDBCol>
+
+        <MDBCol col='4' md='6'>
+
+          <div>
+            <br>
+            </br>
+            <br>
+            </br>
+            <br>
+            </br>
+            <br>
+            </br>
+          </div>
+          <MDBInput wrapperClass='mb-4' label='Email address' id='formControlLg' type='email' size="lg" onChange={(e)=>
+        setName(e.target.value)}/>
+          <MDBInput wrapperClass='mb-4' label='Password' id='formControlLg' type='password' size="lg" onChange={(e)=>
         setPas(e.target.value)}/>
-        <Form.Control.Feedback type="invalid">
-              Please Enter a valid Password.
-            </Form.Control.Feedback>
-      </Form.Group>
-      <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Label>Don't have an account? <Link to="/SignUp">  Sign up</Link></Form.Label>
-        </Form.Group>
 
-      
 
-      <Button variant="primary" type="submit" onClick={log}>
-        Submit
-      </Button>
-      <h1>{loginStatus}</h1>
-    </Form>
-    </Col>
-    <Col xs lg="3"/>
-    </Row>
-    </Container>
-    </div>
-  )
+          <div className="d-flex justify-content-between mx-4 mb-4">
+            <MDBCheckbox name='flexCheck' value='' id='flexCheckDefault' label='Remember me' />
+            <Link to="/SignUp">  Forget Password </Link>
+          </div>
+
+          <MDBBtn className="mb-4 w-100" size="lg" onClick={handleSubmit}>Sign in</MDBBtn>
+
+
+        </MDBCol>
+
+      </MDBRow>
+
+    </MDBContainer>
+  );
 }
 
-export default Login
+export default Login;
